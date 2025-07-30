@@ -5,27 +5,28 @@ import Contact from '@/models/Contact';
 
 export async function POST(req: Request) {
   try {
+    // ✅ 1️⃣ Request se data nikalna
     const { name, email, message } = await req.json();
 
-    // ✅ 1️⃣ Database connect karo
+    // ✅ 2️⃣ MongoDB connect karo
     await connectDB();
 
-    // ✅ 2️⃣ MongoDB me save karo
+    // ✅ 3️⃣ MongoDB me save karo
     await Contact.create({ name, email, message });
 
-    // ✅ 3️⃣ Nodemailer transporter
+    // ✅ 4️⃣ Nodemailer transporter setup
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.EMAIL_USER,  // ✅ Gmail email
+        pass: process.env.EMAIL_PASS,  // ✅ Gmail App Password
       },
     });
 
-    // ✅ 4️⃣ Email bhejo
+    // ✅ 5️⃣ Email bhejna
     await transporter.sendMail({
       from: `"AlphaDigital Contact" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER, // 📩 tumhara email jaha message aayega
+      to: process.env.EMAIL_USER, // 📩 Yahan tumhara email jaha msg aayega
       subject: `📬 New Contact Message from ${name}`,
       html: `
         <h2>New Contact Message</h2>
@@ -35,22 +36,21 @@ export async function POST(req: Request) {
       `,
     });
 
+    // ✅ 6️⃣ Response bhejna
     return NextResponse.json({ success: true });
-  } 
-  // catch (error) {
-  //   console.error('❌ API Error:', error);
-  //   return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
-  // }
-  catch (error) {
-  console.error("❌ API error:", error);
-  let errorMessage = "Unknown error";
 
-  if (error instanceof Error) {
-    errorMessage = error.message;
+  } catch (error: unknown) {
+    // ✅ TypeScript-friendly error handling
+    console.error("❌ API error:", error);
+
+    let errorMessage = "Unknown error";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
+    return NextResponse.json(
+      { success: false, error: errorMessage },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
 }
-
-}
-  
