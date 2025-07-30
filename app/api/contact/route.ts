@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { connectDB } from '@/lib/mongodb';
-import Contact from '@/models/contact';
+import Contact from '@/models/Contact';
 
 export async function POST(req: Request) {
   try {
@@ -36,8 +36,21 @@ export async function POST(req: Request) {
     });
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('❌ API Error:', error);
-    return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
+  } 
+  // catch (error) {
+  //   console.error('❌ API Error:', error);
+  //   return NextResponse.json({ success: false, error: 'Server error' }, { status: 500 });
+  // }
+  catch (error) {
+  console.error("❌ API error:", error);
+  let errorMessage = "Unknown error";
+
+  if (error instanceof Error) {
+    errorMessage = error.message;
   }
+
+  return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
 }
+
+}
+  

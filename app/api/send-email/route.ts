@@ -59,7 +59,14 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("❌ API error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+  console.error("❌ API error:", error);
+  let errorMessage = "Unknown error";
+
+  if (error instanceof Error) {
+    errorMessage = error.message;
   }
+
+  return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
+}
+
 }
