@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 export default function ContactSection() {
   const [isVisible, setIsVisible] = useState(false);
 
-  // 🟢 Form ke liye state
+  // 🟢 Form state
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,7 +34,7 @@ export default function ContactSection() {
     return () => observer.disconnect();
   }, []);
 
-  // 🟢 Input changes handle karna
+  // 🟢 Input changes handle
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -48,7 +48,6 @@ export default function ContactSection() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // 🛑 Message validation (500 char limit)
     if (formData.message.length > 500) {
       setSubmitStatus('⚠️ Message must be 500 characters or less.');
       setIsSubmitting(false);
@@ -56,7 +55,6 @@ export default function ContactSection() {
     }
 
     try {
-      // ✅ API ko request bhejna
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -65,7 +63,7 @@ export default function ContactSection() {
 
       if (response.ok) {
         setSubmitStatus('✅ Message sent successfully! We’ll respond within 24 hours.');
-        setFormData({ name: '', email: '', message: '' }); // 🔄 Reset form
+        setFormData({ name: '', email: '', message: '' });
       } else {
         setSubmitStatus('❌ Failed to send message. Please try again.');
       }
@@ -83,30 +81,37 @@ export default function ContactSection() {
       id="contact"
       className="py-32 bg-gradient-to-br from-purple-900 via-black to-pink-900"
     >
-      <div className="max-w-4xl mx-auto px-8">
-        {/* 🟣 Title */}
-        <div
-          className={`text-center mb-16 transition-all duration-1000 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-          }`}
-        >
-          <h2 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
-            LET'S
-            <span className="bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent ml-4">
-              TALK
-            </span>
-          </h2>
+      <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        
+        {/* 🔹 LEFT SIDE - Spline Robot */}
+        <div className="relative flex justify-center">
+          <iframe
+            src="https://my.spline.design/genkubgreetingrobot-xFkiPyPgBmLyDrLtIESFj5Zt/"
+            frameBorder="0"
+            width="100%"
+            height="500px"
+            className="rounded-xl transition-transform duration-500 hover:rotate-6"
+          ></iframe>
         </div>
 
-        {/* 🟣 Contact Form */}
-        <div
-          className={`transition-all duration-1000 delay-300 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
-          }`}
-        >
+        {/* 🔹 RIGHT SIDE - Contact Form */}
+        <div>
+          <div
+            className={`text-center lg:text-left mb-16 transition-all duration-1000 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'
+            }`}
+          >
+            <h2 className="text-5xl md:text-7xl font-black text-white mb-6 tracking-tight">
+              LET'S
+              <span className="bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent ml-4">
+                TALK
+              </span>
+            </h2>
+          </div>
+
+          {/* 🟣 Contact Form */}
           <form id="contact-form" onSubmit={handleSubmit} className="space-y-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* 🔹 Name */}
               <div>
                 <input
                   type="text"
@@ -119,7 +124,6 @@ export default function ContactSection() {
                 />
               </div>
 
-              {/* 🔹 Email */}
               <div>
                 <input
                   type="email"
@@ -133,7 +137,6 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* 🔹 Message */}
             <div>
               <textarea
                 name="message"
@@ -152,8 +155,7 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* 🔹 Submit Button */}
-            <div className="text-center">
+            <div className="text-center lg:text-left">
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -166,50 +168,12 @@ export default function ContactSection() {
               </button>
             </div>
 
-            {/* 🟢 Status Message */}
             {submitStatus && (
-              <div className="text-center">
+              <div className="text-center lg:text-left">
                 <p className="text-white/80 text-sm">{submitStatus}</p>
               </div>
             )}
           </form>
-
-          {/* 🔹 Social Links */}
-          <div className="text-center mt-12">
-            <p className="text-white/60 text-lg mb-8">
-              We respond within 24 hours.
-            </p>
-
-            <div className="flex items-center justify-center space-x-6">
-              {[
-                {
-                  name: 'LinkedIn',
-                  icon: 'ri-linkedin-fill',
-                  link: 'https://www.linkedin.com/in/suraj-kumar-6a2759283/',
-                },
-                {
-                  name: 'GitHub',
-                  icon: 'ri-github-fill',
-                  link: 'https://github.com/vishsuraj9546',
-                },
-                {
-                  name: 'Instagram',
-                  icon: 'ri-instagram-fill',
-                  link: 'https://www.instagram.com/rolex_suraj_9546/?hl=en',
-                },
-              ].map((social) => (
-                <a
-                  key={social.name}
-                  href={social.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 flex items-center justify-center bg-black rounded-full text-white hover:bg-white hover:text-black transition-all duration-300 cursor-pointer"
-                >
-                  <i className={`${social.icon} text-xl`} />
-                </a>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </section>
