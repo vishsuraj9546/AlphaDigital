@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { connectDB } from '@/lib/mongodb';
-import Contact from '@/models/Contact';
+import Contact from '../../../models/Contact';   // ✅ FIXED PATH
 
 export async function POST(req: Request) {
   try {
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     // ✅ 5️⃣ Email bhejna
     await transporter.sendMail({
       from: `"AlphaDigital Contact" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER, // 📩 Yahan tumhara email jaha msg aayega
+      to: process.env.EMAIL_USER,
       subject: `📬 New Contact Message from ${name}`,
       html: `
         <h2>New Contact Message</h2>
@@ -36,11 +36,9 @@ export async function POST(req: Request) {
       `,
     });
 
-    // ✅ 6️⃣ Response bhejna
     return NextResponse.json({ success: true });
 
   } catch (error: unknown) {
-    // ✅ TypeScript-friendly error handling
     console.error("❌ API error:", error);
 
     let errorMessage = "Unknown error";
