@@ -1,5 +1,5 @@
 'use client';
-import Footer from '@/components/Footer';
+// import Footer from '@/components/Footer';
 
 import { FaInstagram, FaFacebookF, FaLinkedinIn, FaGithub } from 'react-icons/fa';
 
